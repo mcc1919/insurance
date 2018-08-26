@@ -1,0 +1,63 @@
+const use = require('./data')
+var name = use.RandomName()
+var phone = use.Randomphone()
+var case1 = use.Random_type(1)//0：监护人责任5元款 1：监护人责任1元款
+describe('中国大地保险', function() {
+    beforeEach(function() {
+            cy.fixture('user.json').as('user')
+        })
+   it('产品目录', function() {
+    const user = this.user
+    cy.visit(user.URL)
+    cy.contains('监护人责任险').click()
+    cy.wait(2000)
+    cy.url().should('include', 'groupmessage')
+    if(case1==0){
+        cy.get('#selectedPlan').select('监护人责任5元款')
+        cy.get('#wrapper > div.view.page-transition > main > div.travel-info > div.info-tab-body > div:nth-child(3) > div > div > select')
+        .select('1')   
+        cy.wait(2000)     
+        cy.get('#wrapper > div.view.page-transition > main > div.travel-info > div.info-tab-body > div:nth-child(6) > div > div > div > div')
+        .click()
+        cy.contains('北京').click()
+        cy.contains('市辖区').click()
+        cy.contains('西城区').click()
+        cy.contains('￥5.00').should(($p) => {
+            expect($p).to.contain('￥5.00') 
+            })
+        }
+    if(case1==1){
+        cy.get('#selectedPlan').select('监护人责任1元款')
+        //cy.get('#wrapper > div.view.page-transition > main > div.travel-info > div.info-tab-body > div:nth-child(3) > div > div > select')
+        cy.get('#wrapper > div.view.page-transition > main > div.travel-info > div.info-tab-body > div:nth-child(3) > div > div > select')
+        .select('1') 
+        cy.wait(2000) 
+        cy.get('#wrapper > div.view.page-transition > main > div.travel-info > div.info-tab-body > div:nth-child(6) > div > div > div > div')
+        .click()
+        cy.contains('北京').click()
+        cy.contains('市辖区').click()
+        cy.contains('西城区').click()
+        cy.contains('￥1.00').should(($p) => {
+            expect($p).to.contain('￥1.00') 
+            })
+        }
+    cy.contains('立即购买').click()
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(1) > div:nth-child(2) > div > div > input.inputTxt')
+    .type(name)
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(1) > div:nth-child(4) > div > div > input.inputTxt')
+    .type('	110101199003073108')
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(1) > div:nth-child(6) > div > div > input.inputTxt')
+    .type(phone)
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(1) > div:nth-child(7) > div > div > input.inputTxt')
+    .type(phone+'@qq.com')
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(3) > div:nth-child(2) > div > div > input.inputTxt')
+    .type(name)
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(3) > div:nth-child(3) > div > div > input.inputTxt')
+    .type('2001-02-02')
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(3) > div:nth-child(4) > div > div > input.inputTxt')
+    .type('一年级')
+    cy.contains('确认信息').click()
+    cy.get('#wrapper > div.view.page-transition > main > div.policyInfo > div:nth-child(11) > div > label > i').click()
+    cy.contains('确认购买').click()
+})
+})
